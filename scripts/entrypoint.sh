@@ -31,12 +31,22 @@ else
   hostname="$VIRTUAL_HOST"
 fi
 
+if [[ -z "$TIMEZONE" ]]; then
+  timezone='UTC'
+else
+  timezone="$TIMEZONE"
+fi
+
 python='/usr/bin/python2.7'
 uwsgi='/usr/local/bin/uwsgi'
 localconf_tmpl_path='/usr/local/etc/rattic/local.tmpl.cfg'
 localconf_path='/srv/rattic/conf/local.cfg'
 
 install -Zm 0600 "$localconf_tmpl_path" "$localconf_path"
+sed -ir \
+  's/{{\s*timezone\s*}}/'"$timezone"'/g' \
+  "$localconf_path"
+
 sed -ir \
   's/{{\s*secretkey\s*}}/k6tc4Lg3XmEftMtabEE3Gf3q4TscrprfeR7iY7ZxJpk3q4HXwsTesm8gNAzUUmHsSdGqkJa8rzkNWncjA7h9ifs49cgygjvLK4h4mFTNxjGnxG3Ry7NeE7DBdpuNj4RNb9gCksCa3JKKnKk83SjFrgTeB5YS2WXxGHxbhVb666ZEA5eCmiS7kE2DhU5ivH2Fsyo2bcFNdeSZDyNWhD5qyKdonymWz4AyjGXjX6i3No9wUrJ87B3LbK4yrPViLq8Y/g' \
   "$localconf_path"
