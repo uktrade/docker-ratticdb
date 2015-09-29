@@ -38,7 +38,6 @@ apt-get purge -y \
   build-essential \
   ca-certificates \
   curl \
-  gettext \
   libldap2-dev \
   libpq-dev \
   libsasl2-dev \
@@ -47,7 +46,6 @@ apt-get purge -y \
   python-pip
 
 apt-get install -y --no-install-recommends \
-  gettext \
   libldap-2.4 \
   libpq5 \
   libsasl2-2 \
