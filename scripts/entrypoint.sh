@@ -44,7 +44,7 @@ localconf_path='/srv/rattic/conf/local.cfg'
 
 install -Zm 0600 "$localconf_tmpl_path" "$localconf_path"
 sed -ir \
-  's/{{\s*timezone\s*}}/'"$timezone"'/g' \
+  's/{{\s*timezone\s*}}/'"$(echo $timezone | sed -r 's/\//\\\//g')"'/g' \
   "$localconf_path"
 
 sed -ir \
