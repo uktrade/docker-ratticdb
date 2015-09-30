@@ -77,12 +77,19 @@ sed -ir \
 
 rm -f "${localconf_path}r"
 
-# Optional: cleanup these if SIGTERM is received while these are running.
 $python manage.py syncdb --noinput
 $python manage.py migrate --all
+
+if [[ "$1" == 'init' ]]; then
+  sleep 10
+  $python manage.py demosetup
+fi
+
 $python manage.py collectstatic --noinput
 $python manage.py compilemessages
 
-exec $uwsgi --ini '/usr/local/etc/rattic/uwsgi.ini'
+if [[ "$1" != 'init' ]]; then
+  exec $uwsgi --ini '/usr/local/etc/rattic/uwsgi.ini'
+fi
 
 set +e
