@@ -37,42 +37,49 @@ else
   timezone="$TIMEZONE"
 fi
 
+if [[ -z "$SECRETKEY" ]]; then
+  secretkey='fPxrF5PpzRMnaauVsbFr5KQ5Yyd6zVPbcrjz2Q4WzRZw2Bu9tvghauUk66i763SCnr3KY4PwpZv7rcZ3VvfXMdZhdLD6KCbSBGe4kFewJetd5sU5o7yDbpnVYxAGsUFR5KxaCSPT4D27MDxm4RJNtHtfpkuM4uwXfG3VpAoTxRszrpfrtRdBeNucPDnDWLjCHMSTNJs8BDXTonSgCQc9TZNCycM2Nfbpr4sTntAa3NyyR5CTEANdVp6YJYNwHk8e'
+else
+  secretkey="$SECRETKEY"
+fi
+
 python='/usr/bin/python2.7'
 uwsgi='/usr/local/bin/uwsgi'
 localconf_tmpl_path='/usr/local/etc/rattic/local.tmpl.cfg'
 localconf_path='/srv/rattic/conf/local.cfg'
 
 install -Zm 0600 "$localconf_tmpl_path" "$localconf_path"
+
+function escape_sed {
+  echo "$1" | sed -r 's/\//\\\//g'
+}
+
 sed -ir \
-  's/{{\s*timezone\s*}}/'"$(echo $timezone | sed -r 's/\//\\\//g')"'/g' \
+  's/{{\s*timezone\s*}}/'"$(escape_sed "$timezone")"'/g' \
   "$localconf_path"
 
 sed -ir \
-  's/{{\s*secretkey\s*}}/k6tc4Lg3XmEftMtabEE3Gf3q4TscrprfeR7iY7ZxJpk3q4HXwsTesm8gNAzUUmHsSdGqkJa8rzkNWncjA7h9ifs49cgygjvLK4h4mFTNxjGnxG3Ry7NeE7DBdpuNj4RNb9gCksCa3JKKnKk83SjFrgTeB5YS2WXxGHxbhVb666ZEA5eCmiS7kE2DhU5ivH2Fsyo2bcFNdeSZDyNWhD5qyKdonymWz4AyjGXjX6i3No9wUrJ87B3LbK4yrPViLq8Y/g' \
+  's/{{\s*secretkey\s*}}/'"$(escape_sed "$secretkey")"'/g' \
   "$localconf_path"
 
 sed -ir \
-  's/{{\s*hostname\s*}}/'"$hostname"'/g' \
+  's/{{\s*hostname\s*}}/'"$(escape_sed "$hostname")"'/g' \
   "$localconf_path"
 
 sed -ir \
-  's/{{\s*database_host\s*}}/'"$database_host"'/g' \
+  's/{{\s*database_host\s*}}/'"$(escape_sed "$database_host")"'/g' \
   "$localconf_path"
 
 sed -ir \
-  's/{{\s*database_port\s*}}/'"$database_port"'/g' \
+  's/{{\s*database_port\s*}}/'"$(escape_sed "$database_port")"'/g' \
   "$localconf_path"
 
 sed -ir \
-  's/{{\s*database_name\s*}}/postgres/g' \
+  's/{{\s*database_user\s*}}/'"$(escape_sed "$database_user")"'/g' \
   "$localconf_path"
 
 sed -ir \
-  's/{{\s*database_user\s*}}/'"$database_user"'/g' \
-  "$localconf_path"
-
-sed -ir \
-  's/{{\s*database_password\s*}}/'"$database_password"'/g' \
+  's/{{\s*database_password\s*}}/'"$(escape_sed "$database_password")"'/g' \
   "$localconf_path"
 
 rm -f "${localconf_path}r"
