@@ -84,6 +84,30 @@ sed -ir \
 
 rm -f "${localconf_path}r"
 
+if [[ -n "$EMAIL_HOST" && -n "$EMAIL_USER" && -n "$EMAIL_PASSWORD" ]]; then
+  if [[ ! "$EMAIL_PORT" =~ ^[0-9]+$ ]]; then
+    EMAIL_PORT=587
+  fi
+  if [[ "$EMAIL_USETLS" != 'true' && "$EMAIL_USETLS" != 'false' ]]; then
+    EMAIL_USETLS='true'
+  fi
+  if [[ -z "$EMAIL_FROM" ]]; then
+    EMAIL_FROM="$EMAIL_USER"
+  fi
+
+  cat >> "$localconf_path" <<EOF
+
+[email]
+backend = django.core.mail.backends.smtp.EmailBackend
+host = $EMAIL_HOST
+port = $EMAIL_PORT
+usetls = $EMAIL_USETLS
+user = $EMAIL_USER
+password = $EMAIL_PASSWORD
+from_email = $EMAIL_FROM
+EOF
+fi
+
 $python manage.py syncdb --noinput
 $python manage.py migrate --all
 
