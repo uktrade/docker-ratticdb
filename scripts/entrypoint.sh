@@ -108,16 +108,21 @@ from_email = $EMAIL_FROM
 EOF
 fi
 
-$python manage.py syncdb --noinput
-$python manage.py migrate --all
+if [[ "$1" == 'migrate' ]]; then
+  sleep 10
+  $python manage.py migrate --all
+fi
 
 if [[ "$1" == 'init' ]]; then
   sleep 10
+  $python manage.py syncdb --noinput
   $python manage.py demosetup
 fi
 
-$python manage.py collectstatic --noinput
-$python manage.py compilemessages
+if [[ "$1" == 'init' || "$1" == 'migrate' ]]; then
+  $python manage.py collectstatic --noinput
+  $python manage.py compilemessages
+fi
 
 if [[ "$1" != 'init' ]]; then
   exec $uwsgi --ini '/usr/local/etc/rattic/uwsgi.ini'
