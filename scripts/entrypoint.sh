@@ -119,10 +119,8 @@ if [[ "$1" == 'init' ]]; then
   $python manage.py demosetup
 fi
 
-if [[ "$1" == 'init' || "$1" == 'migrate' ]]; then
-  $python manage.py collectstatic --noinput
-  $python manage.py compilemessages
-fi
+$python manage.py collectstatic --noinput
+$python manage.py compilemessages
 
 if [[ "$1" != 'init' ]]; then
   exec $uwsgi --ini '/usr/local/etc/rattic/uwsgi.ini'
