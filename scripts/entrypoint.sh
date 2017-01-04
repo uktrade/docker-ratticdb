@@ -1,29 +1,41 @@
 set -e
 
-if [[ -z "$POSTGRES_PORT_5432_TCP_ADDR" ]]; then
-  echo '$POSTGRES_PORT_5432_TCP_ADDR not defined. Aborting...' >&2
-  exit 1
+database_host=''
+database_port=''
+database_user=''
+database_password=''
+
+if [[ -n "$POSTGRES_PORT_5432_TCP_ADDR" ]]; then
+  database_host="$POSTGRES_PORT_5432_TCP_ADDR"
+else
+  database_host='postgres'
 fi
 
-if [[ -z "$POSTGRES_PORT_5432_TCP_PORT" ]]; then
-  echo '$POSTGRES_PORT_5432_TCP_PORT not defined. Aborting...' >&2
-  exit 1
+if [[ -n "$POSTGRES_PORT_5432_TCP_PORT" ]]; then
+  database_port="$POSTGRES_PORT_5432_TCP_PORT"
+else
+  database_port='5432'
 fi
 
-if [[ -z "$POSTGRES_ENV_POSTGRES_USER" ]]; then
-  echo '$POSTGRES_ENV_POSTGRES_USER not defined. Aborting...' >&2
-  exit 1
+if [[ -n "$POSTGRES_ENV_POSTGRES_USER" ]]; then
+  database_user="$POSTGRES_ENV_POSTGRES_USER"
+else
+  if [[ -z "$POSTGRES_USER" ]]; then
+    echo 'Neither $POSTGRES_ENV_POSTGRES_USER or $POSTGRES_USER is defined. Aborting...' >&2
+    exit 1
+  fi
+  database_user="$POSTGRES_USER"
 fi
 
-if [[ -z "$POSTGRES_ENV_POSTGRES_PASSWORD" ]]; then
-  echo '$POSTGRES_ENV_POSTGRES_PASSWORD not defined. Aborting...' >&2
-  exit 1
+if [[ -n "$POSTGRES_ENV_POSTGRES_PASSWORD" ]]; then
+  database_password="$POSTGRES_ENV_POSTGRES_PASSWORD"
+else
+  if [[ -z "$POSTGRES_PASSWORD" ]]; then
+    echo 'Neither $POSTGRES_ENV_POSTGRES_PASSWORD or $POSTGRES_PASSWORD is defined. Aborting...' >&2
+    exit 1
+  fi
+  database_password="$POSTGRES_PASSWORD"
 fi
-
-database_host="$POSTGRES_PORT_5432_TCP_ADDR"
-database_port="$POSTGRES_PORT_5432_TCP_PORT"
-database_user="$POSTGRES_ENV_POSTGRES_USER"
-database_password="$POSTGRES_ENV_POSTGRES_PASSWORD"
 
 if [[ -z "$VIRTUAL_HOST" ]]; then
   hostname='localhost'
