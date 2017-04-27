@@ -14,6 +14,7 @@ RUN apt-get autoremove -y && apt-get clean -y && rm -rf var/lib/apt/lists/* /var
 ADD conf/local.tmpl.cfg /srv/rattic/conf/local.cfg
 ADD conf/uwsgi.ini /usr/local/etc/rattic/uwsgi.ini
 ADD scripts/entrypoint.sh /scripts/entrypoint.sh
+RUN chmod +x /scripts/entrypoint.sh
 
 EXPOSE 8000/tcp
 

@@ -55,8 +55,8 @@ else
   secretkey="$SECRETKEY"
 fi
 
-python='/usr/bin/python2.7'
-uwsgi='/usr/local/bin/uwsgi'
+python=$(which python2)
+uwsgi=$(which uwsgi)
 localconf_path='/srv/rattic/conf/local.cfg'
 
 function escape_sed {
