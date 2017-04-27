@@ -1,4 +1,5 @@
 FROM python:2.7
+USER nobody
 
 ARG RATTIC_RELEASE
 ENV RATTIC_RELEASE 1.3.1
@@ -15,7 +16,6 @@ ADD conf/local.tmpl.cfg /srv/rattic/conf/local.cfg
 ADD conf/uwsgi.ini /usr/local/etc/rattic/uwsgi.ini
 ADD scripts/entrypoint.sh /scripts/entrypoint.sh
 
-USER nobody
 EXPOSE 8000/tcp
 
 ENTRYPOINT ["bash", "/scripts/entrypoint.sh"]
