@@ -57,10 +57,7 @@ fi
 
 python='/usr/bin/python2.7'
 uwsgi='/usr/local/bin/uwsgi'
-localconf_tmpl_path='/usr/local/etc/rattic/local.tmpl.cfg'
 localconf_path='/srv/rattic/conf/local.cfg'
-
-install -Zm 0600 "$localconf_tmpl_path" "$localconf_path"
 
 function escape_sed {
   echo "$1" | sed -r 's/\//\\\//g'
